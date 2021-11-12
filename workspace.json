@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "projects": {
+    "run-app": "apps/run-app",
+    "run-app-e2e": "apps/run-app-e2e"
+  }
+}

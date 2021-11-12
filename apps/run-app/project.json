@@ -1,0 +1,69 @@
+{
+  "root": "apps/run-app",
+  "sourceRoot": "apps/run-app/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/run-app",
+        "index": "apps/run-app/src/index.html",
+        "baseHref": "/",
+        "main": "apps/run-app/src/main.tsx",
+        "polyfills": "apps/run-app/src/polyfills.ts",
+        "tsConfig": "apps/run-app/tsconfig.app.json",
+        "assets": ["apps/run-app/src/favicon.ico", "apps/run-app/src/assets"],
+        "styles": ["apps/run-app/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/run-app/src/environments/environment.ts",
+              "with": "apps/run-app/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "run-app:build",
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "run-app:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/run-app/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/run-app"],
+      "options": {
+        "jestConfig": "apps/run-app/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
