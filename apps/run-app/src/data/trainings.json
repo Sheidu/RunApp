@@ -1,5 +1,18 @@
-[
-    { "date": "2021-07-21)", "distance": "1", "type": "0" },
-
-    { "date": "2021-09-02", "distance": "5.4", "type": "1" }
-]
+{
+  "trainings": [
+    {
+      "id": "1",
+      "date": "2021-07-21",
+      "distance": "1",
+      "type": 1,
+      "comment": ""
+    },
+    {
+      "id": "2",
+      "date": "2021-09-02",
+      "distance": "5.4",
+      "type": 2,
+      "comment": "comment!"
+    }
+  ]
+}
