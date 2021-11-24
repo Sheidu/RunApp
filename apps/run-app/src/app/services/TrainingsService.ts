@@ -11,7 +11,7 @@ export const getAllTrainings = () => {
 //     );
 //     return data;
 // };
-
+ 
 export const createTraining = (data: Training) => {
     return http.post("/trainings", data);
 };

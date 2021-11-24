@@ -43,7 +43,7 @@ export interface TrainingsTableProps {
     onEdit: (selectedTraining: Training) => void;
     onDelete: (selectedTraining: Training) => void;
 }
-
+ 
 export interface TrainingsTableState {
     order: Order,
     orderBy: keyof Training

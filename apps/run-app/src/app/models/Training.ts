@@ -17,7 +17,7 @@ export function CreateEmptyTraining(): Training {
         comment: ''
     }
 }
-
+ 
 export function CreateTraining(
     id: number,
     date: Date,

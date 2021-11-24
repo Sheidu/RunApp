@@ -25,7 +25,7 @@ export function App() {
   const [alertMeta, setAlertMeta] = useState({severity: '', message: ''});
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [isTrainingsListManipulated, setisTrainingsListManipulated] = useState(false);
-
+ 
   // const { data, isLoading } = useQuery<Training[]>('trainings', getAllTrainings);
   // const { mutate } = useMutation(updateTraining);
 
@@ -57,7 +57,7 @@ export function App() {
     }
     setAlertOpen(false);
   };  
-
+ 
   const [openDlg, setOpenDlg] = useState(false);
   const onDlgTrainingAddOpen = () => {
     setSelectedTraining(CreateEmptyTraining());
@@ -119,7 +119,7 @@ export function App() {
             <Grid container xs={1}>
               <InputLabel id="lblFilter">Filter:</InputLabel>
             </Grid>
-            <Grid container xs={11}>
+             <Grid container xs={11}>
               <Select value={filterType} onChange={(e) => onFilterTypeChanged(e.target.value as EnmTrainingTypes)} variant="outlined">
                         {Object.keys(EnmTrainingTypes)
                             .filter(key => !isNaN(Number(key)))

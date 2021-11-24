@@ -32,7 +32,7 @@ class SortableTableHeader extends Component<SortableTableHeaderProps, unknown> {
     onSort(event: React.MouseEvent<unknown>, property: keyof Training) {
       this.props.onHeaderClick(event, property);
     }
-  
+   
     render() {
       return (
         <TableHead>

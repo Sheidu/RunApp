@@ -33,7 +33,7 @@ class TrainingsTable extends Component<TrainingsTableProps, TrainingsTableState>
         const filteredTrainings = (selectAll) 
                                     ? this.props.trainings
                                     : this.props.trainings.filter(trainingsFilter(filter));
-
+ 
         return (
             <TableContainer component={Paper} sx={{marginTop:2}}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">

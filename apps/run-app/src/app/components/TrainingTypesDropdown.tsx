@@ -20,5 +20,5 @@ export const TrainingTypesDropdown = (props: TrainingTypesProps) => {
             />
         );
 }
-
+ 
 export default TrainingTypesDropdown

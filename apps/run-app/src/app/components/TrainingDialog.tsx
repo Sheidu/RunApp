@@ -102,7 +102,7 @@ const TrainingDialog = (props: TrainingDialogProps) => {
                                 selectedType={props.selectedTraining.type} />
                         </Grid>              
                     </Grid>
-                    <Grid container xs={12}>
+                     <Grid container xs={12}>
                         <Grid container xs={5}>
                             <InputLabel id="lblComment">Comment:</InputLabel>
                         </Grid>

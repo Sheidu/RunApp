@@ -1,6 +1,6 @@
 import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { AlertBarProps } from "../models/types";
-
+ 
 export const AlertBar = (props: AlertBarProps) => {
     return (
         <Snackbar anchorOrigin={{vertical: "top", horizontal: "center"}} open={props.open}
