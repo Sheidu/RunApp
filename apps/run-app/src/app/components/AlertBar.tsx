@@ -1,7 +1,12 @@
 import { Alert, AlertColor, Snackbar } from "@mui/material";
-import { AlertBarProps } from "../models/types";
 
-export const AlertBar = (props: AlertBarProps) => {
+interface AlertBarProps {
+    alertMeta: {severity: string, message: string};
+    open: boolean; 
+    onClose: (event?: React.SyntheticEvent | undefined, reason?: string | undefined) => void;
+}
+
+export function AlertBar(props: AlertBarProps) {
     return (
         <Snackbar anchorOrigin={{vertical: "top", horizontal: "center"}} open={props.open}
                   autoHideDuration={6000} onClose={props.onClose}>
