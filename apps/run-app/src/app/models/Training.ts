@@ -1,4 +1,10 @@
-import { EnmTrainingTypes } from "./types";
+export enum EnmTrainingTypes {
+    UNKNOWN = 0,
+    WALKING = 1,
+    RUNNING = 2,
+    SWIMMING = 3,
+    CYCLING = 4
+}
 
 export interface Training {
     id: number;
