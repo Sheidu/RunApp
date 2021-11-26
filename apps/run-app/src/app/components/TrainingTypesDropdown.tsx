@@ -1,5 +1,5 @@
 import { MenuItem, Select } from "@mui/material";
-import { EnmTrainingTypes, Training } from "../models/Training";
+import { EnmTrainingTypes } from "../models/Training";
 import { EnmTrainingTypesLabel } from "../models/types";
 
 interface TrainingTypesProps {
@@ -13,8 +13,7 @@ export function TrainingTypesDropdown(props: TrainingTypesProps) {
                         {Object.keys(EnmTrainingTypes)
                             .filter(key => !isNaN(Number(key)))
                             .map(key => 
-                                <MenuItem selected={props.selectedType === Number(key)} 
-                                            value={key}>
+                                <MenuItem value={key}>
                                     {EnmTrainingTypesLabel.get(Number(key))}
                                 </MenuItem> 
                         )}

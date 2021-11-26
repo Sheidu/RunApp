@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AlertBar } from "./AlertBar";
 import { Filter } from "./Filter";
 import { TrainingDialog } from './TrainingDialog';
@@ -11,22 +11,28 @@ import { createTraining, getAllTrainings, updateTraining, removeTraining } from 
 export function TrainingsList() {
     const [alertMeta, setAlertMeta] = useState({severity: '', message: ''});
     const [isAlertOpen, setAlertOpen] = useState(false);
-    const showAlert = (severity: string, message: string) => {
-        setIsTrainingsListManipulated(true);
-        setAlertMeta({severity, message});
-        setAlertOpen(true);
-    };
-    const closeDialog = () => {
-        setOpenDlg(false);
-        setSelectedTraining(CreateEmptyTraining());
-    };
+    const showAlert = useCallback((severity: string, message: string) => {
+          setIsTrainingsListManipulated(true);
+          setAlertMeta({severity, message});
+          setAlertOpen(true);
+      }
+      , []
+    );
+    const closeDialog = useCallback(() => {
+          setOpenDlg(false);
+          setSelectedTraining(CreateEmptyTraining());
+      }
+      , []
+    );
     
-    const handleAlertClose = (event?: React.SyntheticEvent | undefined, reason?: string | undefined) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setAlertOpen(false);
-    };  
+    const handleAlertClose = useCallback((event?: React.SyntheticEvent | undefined, reason?: string | undefined) => {
+          if (reason === 'clickaway') {
+              return;
+          }
+          setAlertOpen(false);
+      }
+      , []
+    );  
  
     const [isTrainingsListManipulated, setIsTrainingsListManipulated] = useState(false);
 
@@ -46,13 +52,17 @@ export function TrainingsList() {
     }, [isTrainingsListManipulated]);
     
     const [openDlg, setOpenDlg] = useState(false);
-    const onDlgTrainingAddOpen = () => {
-      setSelectedTraining(CreateEmptyTraining());
-      setOpenDlg(true);
-    };
-    const onDlgTrainingClose = () => {
-      closeDialog();
-    };
+    const onDlgTrainingAddOpen = useCallback(() => {
+        setSelectedTraining(CreateEmptyTraining());
+        setOpenDlg(true);
+      }
+      , []
+    );
+    const onDlgTrainingClose = useCallback(() => {
+        closeDialog();
+      }
+      , [closeDialog]
+    );
     const onDlgTrainingSave = (selectedTraining: Training) => {
       if (selectedTraining.id) {
         updateTraining(selectedTraining.id, selectedTraining)
@@ -74,24 +84,33 @@ export function TrainingsList() {
     };
       
     const [filterType, setFilterType] = useState<EnmTrainingTypes>(EnmTrainingTypes.UNKNOWN);
-    const onFilterTypeChanged = (selectedValue: EnmTrainingTypes) => {
-      setFilterType(selectedValue);
-    };
+    const onFilterTypeChanged = useCallback((selectedValue: EnmTrainingTypes) => {
+        setFilterType(selectedValue);
+      }
+      , []
+    );
     const [selectedTraining, setSelectedTraining] = useState<Training>(CreateEmptyTraining());
-    const onEditTraining = (selectedTraining: Training) => {
-      setSelectedTraining(selectedTraining);
-      setOpenDlg(true);
-    };
-    const onDeleteTraining = (selectedTraining: Training) => {
-      removeTraining(selectedTraining.id)
-      .then(() => {
-        showAlert("success", "Remove succeeded.");
-        closeDialog();
-      })
-      .catch(() => showAlert("error", "Remove failed"));
-  
-      setSelectedTraining(CreateEmptyTraining());
-    };
+
+    const onEditTraining = useCallback(
+      (selectedTraining: Training) => {
+        setSelectedTraining(selectedTraining);
+        setOpenDlg(true);
+      }, 
+      []
+    );
+
+    const onDeleteTraining = useCallback((selectedTraining: Training) => {
+        removeTraining(selectedTraining.id)
+        .then(() => {
+          showAlert("success", "Remove succeeded.");
+          closeDialog();
+        })
+        .catch(() => showAlert("error", "Remove failed"));
+    
+        setSelectedTraining(CreateEmptyTraining());
+      }
+      , [closeDialog, showAlert]
+    );
 
     return (
         <Box>

@@ -2,19 +2,16 @@ import { Button,
     TextField,
     Box,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     InputLabel,
     CircularProgress
 } from "@mui/material";
-import DateAdapter from '@mui/lab/AdapterMoment';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import { TrainingTypesDropdown } from "./TrainingTypesDropdown";
 import { Controller, useForm } from "react-hook-form";
-import { EnmTrainingTypes, Training } from "../models/Training";
-import { useEffect, useState } from "react";
+import { Training } from "../models/Training";
+import { useEffect, useMemo, useState } from "react";
 import { DATE_FORMAT } from "../utils/constants";
 
 interface TrainingDialogProps {
@@ -25,20 +22,17 @@ interface TrainingDialogProps {
 }
 
 export function TrainingDialog(props: TrainingDialogProps) {
-    const {handleSubmit, control, reset, formState: { errors }} = useForm<Training>();
+    const {handleSubmit, control, reset } = useForm<Training>({
+        defaultValues: props.selectedTraining
+    });
 
     const onSubmit = (data : Training) => {
         props.onSave(data);
     };
 
-    const [training, setTraining] = useState<Training | undefined>();
     useEffect(() => {
-        setTraining(props.selectedTraining);
+        reset(props.selectedTraining);
     }, [props.selectedTraining]);
-    useEffect(() => {
-        // reset form with user data
-        reset(training);
-    }, [reset, training]);
 
     return (
 
@@ -50,48 +44,53 @@ export function TrainingDialog(props: TrainingDialogProps) {
             maxWidth={"md"}
           >
             <DialogTitle id="dlgTraining">
-                {training && (
-                    (training.id > 0) ? (
-                        "Edit Training - " + training.id.toString()
+                {props.selectedTraining && (
+                    (props.selectedTraining.id > 0) ? (
+                        "Edit Training - " + props.selectedTraining.id.toString()
                     ) : (
                         "Add Training"
                     )
                 )}
-                {!training && "Training is loading"}
+                {!props.selectedTraining && "Training is loading"}
             </DialogTitle>
             <DialogContent>
-                {training &&
+                {props.selectedTraining &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Box display="grid" gridTemplateColumns="150px 1fr" gap={3}>
                         <InputLabel id="lblDistance">Distance (km):</InputLabel>
-                        <Controller defaultValue={props.selectedTraining.distance}
-                                        name={"distance"}
-                                        control={control}
-                                        render={({ field: { onChange, value } }) => (
+                        <Controller name={"distance"} control={control}
+                                    rules={ {required: 'Please enter distance.'} }
+                                        render={({ 
+                                            field: { onChange, value },
+                                            fieldState
+                                        }) => (
                                             <TextField variant="outlined" onChange={(e) => onChange(Number(e.target.value))} 
+                                                error={!!fieldState.error} helperText={fieldState.error?.message}
                                                 value={value} />
                                         )}
                                     />
-                        {errors.distance && <p>{errors.distance.message}</p>}
                     </Box>                
                     <Box display="grid" gridTemplateColumns="150px 1fr" gap={3}>
                         <InputLabel id="lblFilter">Date:</InputLabel>
-                        <LocalizationProvider dateAdapter={DateAdapter}>
-                            <Controller name={'date'} control={control} defaultValue={props.selectedTraining.date}
-                                    render={({ field : {onChange , value } }) => (
+                            <Controller name={'date'} control={control}
+                                    rules={ {required: 'Please enter date.'} }
+                                    render={({ 
+                                        field : {onChange , value },
+                                        fieldState
+                                    }) => (
                                 <DesktopDatePicker 
                                     value={value} inputFormat={DATE_FORMAT}
                                     onChange={onChange}
-                                    renderInput={(params) => <TextField {...params} />}
+                                    renderInput={(params) => 
+                                        <TextField {...params} error={!!fieldState.error} helperText={fieldState.error?.message}/>
+                                    }
                                 />
                                     )}
                             />
-                        </LocalizationProvider>
-                        {errors.date && <p>{errors.date.message}</p>}
                     </Box>                
                     <Box display="grid" gridTemplateColumns="150px 1fr" gap={3}>                
                         <InputLabel id="lblType">Type:</InputLabel>
-                        <Controller control={control} name={"type"} defaultValue={props.selectedTraining.type}
+                        <Controller control={control} name={"type"} 
                             render={({ field: { onChange, value } }) => (
                                 <TrainingTypesDropdown selectedType={value} 
                                     onChange={(selectedType) => onChange(selectedType)} />
@@ -100,9 +99,7 @@ export function TrainingDialog(props: TrainingDialogProps) {
                     </Box>                
                     <Box display="grid" gridTemplateColumns="150px 1fr" gap={3}>
                         <InputLabel id="lblComment">Comment:</InputLabel>
-                        <Controller defaultValue={props.selectedTraining.comment}
-                                        name={"comment"}
-                                        control={control}
+                        <Controller name={"comment"} control={control}
                                         render={({ field: { onChange, value } }) => (
                                             <TextField variant="outlined" onChange={onChange} 
                                                 multiline rows={2} maxRows={4}
@@ -116,7 +113,7 @@ export function TrainingDialog(props: TrainingDialogProps) {
                     </Box>                
                 </form>
                 }        
-                {!training && <CircularProgress />}    
+                {!props.selectedTraining && <CircularProgress />}    
             </DialogContent>
           </Dialog>        
     );
