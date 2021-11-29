@@ -7,12 +7,16 @@ import { TrainingsTable } from "./TrainingsTable";
 import { Box } from "@mui/system";
 import { CreateEmptyTraining, Training, EnmTrainingTypes } from "../models/Training";
 import { createTraining, getAllTrainings, updateTraining, removeTraining } from '../services/TrainingsService';
+import { QueryClient, useMutation, useQuery } from "react-query";
+import { UpdateTrainingMutationVariables } from "../models/types";
+
+const queryClient = new QueryClient();
 
 export function TrainingsList() {
     const [alertMeta, setAlertMeta] = useState({severity: '', message: ''});
     const [isAlertOpen, setAlertOpen] = useState(false);
     const showAlert = useCallback((severity: string, message: string) => {
-          setIsTrainingsListManipulated(true);
+          queryClient.invalidateQueries('trainings');
           setAlertMeta({severity, message});
           setAlertOpen(true);
       }
@@ -34,23 +38,38 @@ export function TrainingsList() {
       , []
     );  
  
-    const [isTrainingsListManipulated, setIsTrainingsListManipulated] = useState(false);
-
-    // const { data, isLoading } = useQuery<Training[]>('trainings', getAllTrainings);
-    // const { mutate } = useMutation(updateTraining);
-  
-    const [trainings, setTrainings] = useState<Training[]>([]);
-  
-    useEffect(() => {
-      getAllTrainings().then(res => setTrainings(res.data));
-    }, []);
-    useEffect(() => {
-      if (isTrainingsListManipulated) {
-        getAllTrainings().then(res => setTrainings(res.data));
+    // select all trainings
+    const { data, isFetching } = useQuery<Training[]>('trainings', getAllTrainings);
+    // add new training
+    const addTraining = useMutation<Training, Error, Training>((newTraining) => createTraining(newTraining), {
+      onSuccess: data => {
+        showAlert("success", "Create succeeded.");
+        closeDialog();
+      },
+      onError: () => {
+        showAlert("error", "Create failed");
       }
-      setIsTrainingsListManipulated(false);
-    }, [isTrainingsListManipulated]);
-    
+    });
+    // edit training
+    const { mutate: mUpdateTraining } = useMutation<Training, Error, UpdateTrainingMutationVariables>((params) => updateTraining(params.id, params.data), {
+      onSuccess: data => {
+        showAlert("success", "Update succeeded.");
+        closeDialog();
+      },
+      onError: () => {
+        showAlert("error", "Update failed");
+      }
+    });
+    // delete training
+    const { mutate: mRemoveTraining } = useMutation<Training, Error, number>((id) => removeTraining(id), {
+      onSuccess: data => {
+        showAlert("success", "Remove succeeded.");
+      },
+      onError: () => {
+        showAlert("error", "Remove failed");
+      }
+    });
+
     const [openDlg, setOpenDlg] = useState(false);
     const onDlgTrainingAddOpen = useCallback(() => {
         setSelectedTraining(CreateEmptyTraining());
@@ -65,20 +84,9 @@ export function TrainingsList() {
     );
     const onDlgTrainingSave = (selectedTraining: Training) => {
       if (selectedTraining.id) {
-        updateTraining(selectedTraining.id, selectedTraining)
-        .then(() => {
-          showAlert("success", "Update succeeded.");
-          closeDialog();
-        })
-        .catch(() => showAlert("error", "Update failed"));
-        //mutate(selectedTraining);
+        mUpdateTraining({id: selectedTraining.id, data: selectedTraining});
       } else {
-        createTraining(selectedTraining)
-        .then(() => {
-          showAlert("success", "Create succeeded.");
-          closeDialog();
-        })
-        .catch(() => showAlert("error", "Create failed"));
+        addTraining.mutate(selectedTraining);
       }
       setOpenDlg(false);
     };
@@ -100,16 +108,9 @@ export function TrainingsList() {
     );
 
     const onDeleteTraining = useCallback((selectedTraining: Training) => {
-        removeTraining(selectedTraining.id)
-        .then(() => {
-          showAlert("success", "Remove succeeded.");
-          closeDialog();
-        })
-        .catch(() => showAlert("error", "Remove failed"));
-    
-        setSelectedTraining(CreateEmptyTraining());
+        mRemoveTraining(selectedTraining.id);
       }
-      , [closeDialog, showAlert]
+      , [mRemoveTraining]
     );
 
     return (
@@ -125,7 +126,10 @@ export function TrainingsList() {
                 <Filter onFilterChange={onFilterTypeChanged}/>
                 <Button variant="contained" onClick={onDlgTrainingAddOpen}>Add</Button>
             </Box>
-            <TrainingsTable filter={filterType} trainings={trainings} onEdit={onEditTraining} onDelete={onDeleteTraining} />
+            {isFetching && "Loading..."}
+            {!isFetching && data &&
+              <TrainingsTable filter={filterType} trainings={data} onEdit={onEditTraining} onDelete={onDeleteTraining} />
+            }
         </Box>
     );
 }

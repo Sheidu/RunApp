@@ -15,3 +15,8 @@ export interface HeadCell {
     label: string;
     isSortable: boolean;
 }
+
+export interface UpdateTrainingMutationVariables {
+    id: number;
+    data: Training;
+}

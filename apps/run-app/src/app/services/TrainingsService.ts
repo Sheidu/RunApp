@@ -1,29 +1,24 @@
 import http from "../http-common";
 import { Training } from "../models/Training";
 
-export const getAllTrainings = () => {
-    return http.get("/trainings");
+export async function getAllTrainings() {
+    const { data } = await http.get(
+        "/trainings"
+    );
+    return data;
 };
 
-// export async function getAllTrainings() {
-//     const { data } = await http.get(
-//         "/trainings"
-//     );
-//     return data;
-// };
+export async function createTraining(data: Training) {
+    const response = await http.post("/trainings", data);
+    return response.data;
+}
 
-export const createTraining = (data: Training) => {
-    return http.post("/trainings", data);
-};
+export async function updateTraining(id: number, data: Training) {
+    const response = await http.put(`/trainings/${id}`, data);
+    return response.data;
+}
 
-export const updateTraining = (id: number, data: Training) => {
-    return http.put(`/trainings/${id}`, data);
-};
-// export async function updateTraining(id: number, data: Training) {
-//     const response = await http.put(`/trainings/${id}`, data);
-//     return response;
-// }
-
-export const removeTraining = (id: number) => {
-    return http.delete(`/trainings/${id}`);
-};
+export async function removeTraining(id: number) {
+    const response = await http.delete(`/trainings/${id}`);
+    return response.data;
+}
