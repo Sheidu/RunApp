@@ -93,7 +93,7 @@ export function TrainingDialog(props: TrainingDialogProps) {
                         <Controller control={control} name={"type"} 
                             render={({ field: { onChange, value } }) => (
                                 <TrainingTypesDropdown selectedType={value} 
-                                    onChange={(selectedType) => onChange(selectedType)} />
+                                    onChange={(selectedType) => onChange(Number(selectedType))} />
                             )}
                          />
                     </Box>                
