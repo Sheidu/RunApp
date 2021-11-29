@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { AlertBar } from "./AlertBar";
 import { Filter } from "./Filter";
 import { TrainingDialog } from './TrainingDialog';
@@ -7,12 +7,12 @@ import { TrainingsTable } from "./TrainingsTable";
 import { Box } from "@mui/system";
 import { CreateEmptyTraining, Training, EnmTrainingTypes } from "../models/Training";
 import { createTraining, getAllTrainings, updateTraining, removeTraining } from '../services/TrainingsService';
-import { QueryClient, useMutation, useQuery } from "react-query";
+import { useQueryClient, useMutation, useQuery,  } from "react-query";
 import { UpdateTrainingMutationVariables } from "../models/types";
 
-const queryClient = new QueryClient();
-
 export function TrainingsList() {
+    const queryClient = useQueryClient();
+
     const [alertMeta, setAlertMeta] = useState({severity: '', message: ''});
     const [isAlertOpen, setAlertOpen] = useState(false);
     const showAlert = useCallback((severity: string, message: string) => {
@@ -20,7 +20,7 @@ export function TrainingsList() {
           setAlertMeta({severity, message});
           setAlertOpen(true);
       }
-      , []
+      , [queryClient]
     );
     const closeDialog = useCallback(() => {
           setOpenDlg(false);

@@ -11,7 +11,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import { TrainingTypesDropdown } from "./TrainingTypesDropdown";
 import { Controller, useForm } from "react-hook-form";
 import { Training } from "../models/Training";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { DATE_FORMAT } from "../utils/constants";
 
 interface TrainingDialogProps {
@@ -32,7 +32,7 @@ export function TrainingDialog(props: TrainingDialogProps) {
 
     useEffect(() => {
         reset(props.selectedTraining);
-    }, [props.selectedTraining]);
+    }, [reset, props.selectedTraining]);
 
     return (
 
